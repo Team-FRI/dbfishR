@@ -368,7 +368,7 @@ folder will vary based on where the repo was cloned.</li>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">c</span>(<span class="st">&#39;./man&#39;</span>, <span class="st">&#39;./inst/doc&#39;</span>, <span class="st">&#39;./NAMESPACE&#39;</span>), <span class="at">recursive =</span> T)</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Run the pre-build checks. <code>manual.tex</code> allows for
-debuging bad PDF knits</li>
+debugging bad PDF knits</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>check_dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>(<span class="at">manual =</span> T, <span class="at">vignettes =</span> T, <span class="at">check_dir =</span> check_dir)</span>

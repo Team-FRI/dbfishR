@@ -42,7 +42,7 @@ unlink(c('./man', './inst/doc', './NAMESPACE'), recursive = T)
 ```
 
 4. Run the pre-build checks.
-   `manual.tex` allows for debuging bad PDF knits
+   `manual.tex` allows for debugging bad PDF knits
 
 ```{r eval = F}
 check_dir <- tempdir()
