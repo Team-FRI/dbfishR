@@ -6,12 +6,6 @@ Title: dbfishR
 Description: Programmatic access to the Freshwater Research Institute’s Fish and Amphibian database.
 Authors@R: c(
     person(
-        given = "Mark",
-        family = "Newman",
-        role = c("aut", "cre"),
-        email = "mark@trinetteandmark.com",
-        comment = c(ORCID = "0000-0001-6155-438X")),
-    person(
         given = "Matt ",
         family = "Wilson",
         role = c("aut", "cph")),
@@ -22,7 +16,13 @@ Authors@R: c(
     person(
         given = "Kevin",
         family = "Purcell",
-        role = c("aut")))
+        role = c("aut")),
+    person(
+        given = "Mark",
+        family = "Newman",
+        role = c("aut", "cre"),
+        email = "mark@trinetteandmark.com",
+        comment = c(ORCID = "0000-0001-6155-438X")))
 Depends:
     R (>= 4.0.0)
 Imports:

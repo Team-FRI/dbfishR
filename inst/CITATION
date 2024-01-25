@@ -1,6 +1,24 @@
 rref <- bibentry(
    bibtype = "Manual",
    title = "dbfishR: Programmatic access to the Freshwater Research Institute's Fish and Amphibian database",
-   author = person("Newman, Mark"),
+   author = c(
+    person(
+        given = "Matt ",
+        family = "Wilson",
+        role = c("aut", "cph")),
+    person(
+        given = "Dan",
+        family = "Ressler",
+        role = c("aut", "cph")),
+    person(
+        given = "Kevin",
+        family = "Purcell",
+        role = c("aut")),
+    person(
+        given = "Mark",
+        family = "Newman",
+        role = c("aut", "cre"),
+        email = "mark@trinetteandmark.com",
+        comment = c(ORCID = "0000-0001-6155-438X"))),
    year = 2024,
    url = "https://github.com/markanewman/dbfishR")
