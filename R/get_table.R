@@ -2,7 +2,7 @@
 #' 
 #' @description xxx
 #' 
-#' @importFrom RODBC odbcConnectAccess2007 sqlFetch
+#' @importFrom RODBC odbcConnectAccess2007 sqlFetch odbcClose
 #'
 #' @param table the table to fetch from the db
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
@@ -14,6 +14,7 @@ get_table <-
     file_loc <- fetch_dbfishR(...)
     channel <- RODBC::odbcConnectAccess2007(file_loc, readOnly = T)
     table <- RODBC::sqlFetch(channel, table)
+    RODBC::odbcClose(channel)
     table
   }
 

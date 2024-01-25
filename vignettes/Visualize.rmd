@@ -23,7 +23,7 @@ When viewing any geo-spacial data, we need to set up a region of interest.
 
 ```{r}
 state_name <- 'Pennsylvania'
-county_name <- 'York'
+county_name <- 'Dauphin'
 ```
 
 Get the map information for all the counties in `state_name`, then filter that to the `county_name` we want to focus on.
@@ -39,7 +39,7 @@ options(tigris_use_cache = TRUE)
 
 map <-
   counties(
-    state = 'Pennsylvania',
+    state = state_name,
     progress_bar = interactive()) %>%
   filter(NAME == county_name)
 ```
@@ -97,7 +97,7 @@ This means we can use the full `watersheds` to get all the streams in all the wa
 Strongly consider using a manual loop.
 
 **Hint**: The more layers on a chart, the harder it can be to tell them apart.
-We add in an `fill = 'orange'` to help York county pop.
+We add in an `fill = 'orange'` to help the county pop.
 
 ```{r}
 hydro <- vector(mode = 'list', length = nrow(watersheds))
@@ -119,4 +119,24 @@ ggplot(map, aes(geometry = geometry)) +
   geom_sf(color = 'black', fill = 'orange') + 
   geom_sf(data = watersheds, aes(geometry = geom), alpha = 0) + 
   geom_sf(data = hydro, aes(geometry = geom), color = 'blue')
+```
+
+Up to this point, all the work has been fairly straightforward mapping.
+Lets mix-in the data from `dbfishR`.
+
+**Hint**: When mixing polygon `geometry`s with numeric `x` and `y`, you need to either convert the `x` and `y` to a `geometry`, or set `inherit.aes = F`.
+
+```{r}
+library(dbfishR)
+
+data <-
+  get_sites() %>%
+  filter(tolower(County) == tolower(county_name))
+
+ggplot(map, aes(geometry = geometry)) +
+  theme_bw() + 
+  geom_sf(color = 'black', fill = 'orange') + 
+  geom_sf(data = watersheds, aes(geometry = geom), alpha = 0) + 
+  geom_sf(data = hydro, aes(geometry = geom), color = 'blue') +
+  geom_point(data = data, aes(x = SiteLon, y = SiteLat), color = 'red', inherit.aes = F)
 ```
