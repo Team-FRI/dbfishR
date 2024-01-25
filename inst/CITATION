@@ -1,0 +1,6 @@
+rref <- bibentry(
+   bibtype = "Manual",
+   title = "dbfishR: Programmatic access to the Freshwater Research Institute's Fish and Amphibian database",
+   author = person("Newman, Mark"),
+   year = 2024,
+   url = "https://github.com/markanewman/dbfishR")

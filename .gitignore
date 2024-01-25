@@ -1,0 +1,7 @@
+# IDE/Tools
+.Rhistory
+.RData
+inst/legacy
+!inst/doc
+/doc/
+/Meta/

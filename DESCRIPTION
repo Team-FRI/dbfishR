@@ -1,0 +1,45 @@
+Package: dbfishR
+Type: Package
+Version: 0.0.1
+Date: 2024-01-01
+Title: dbfishR
+Description: Programmatic access to the Freshwater Research Institute’s Fish and Amphibian database.
+Authors@R: c(
+    person(
+        given = "Mark",
+        family = "Newman",
+        role = c("aut", "cre"),
+        email = "mark@trinetteandmark.com",
+        comment = c(ORCID = "0000-0001-6155-438X")),
+    person(
+        given = "Matt ",
+        family = "Wilson",
+        role = c("aut", "cph")),
+    person(
+        given = "Dan",
+        family = "Ressler",
+        role = c("aut", "cph")),
+    person(
+        given = "Kevin",
+        family = "Purcell",
+        role = c("aut"))
+)
+Depends:
+    R (>= 4.0.0)
+Imports:
+    rappdirs,
+    httr,
+    RODBC
+Suggests:
+    rmarkdown,
+    knitr,
+    testthat
+License: MIT + file LICENSE
+URL: https://github.com/markanewman/dbfishR
+BugReports: https://github.com/markanewman/dbfishR/issues
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+VignetteBuilder:
+    knitr
+Encoding: UTF-8
+LazyData: true

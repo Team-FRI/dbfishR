@@ -1,0 +1,78 @@
+---
+title: 'Rebuild'
+author: 'Mark Newman'
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+output:
+  rmarkdown::html_vignette
+bibliography: bib.bib
+vignette: >
+  %\VignetteIndexEntry{Rebuild}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The following guides you through the full (re)build process.
+
+# Steps
+
+1. Clone the repo from [here](https://github.com/markanewman/dbfishR).
+
+2. Load packages
+
+```{r eval = F}
+pkgs <- installed.packages()
+if (!('devtools' %in% pkgs)) { install.packages('devtools') }
+if (!('roxygen2' %in% pkgs)) { install.packages('roxygen2') }
+if (!('pkgdown' %in% pkgs)) { install.packages('pkgdown') }
+if (!('tinytex' %in% pkgs)) {
+  install.packages('tinytex')
+  tinytex::uninstall_tinytex()
+  tinytex::install_tinytex() }
+if ('dbfishR' %in% pkgs) { remove.packages('dbfishR') }
+```
+
+3. Set working directory and clean files that will be regenerated.
+   This folder will vary based on where the repo was cloned.
+
+```{r eval = F}
+setwd('c:/repos/markanewman/dbfishR')
+unlink(c('./man', './inst/doc', './NAMESPACE'), recursive = T)
+```
+
+4. Run the pre-build checks.
+
+```{r eval = F}
+check_dir <- tempdir()
+devtools::check(manual = T, vignettes = T, check_dir = check_dir)
+manual.tex <- file.path(check_dir, '/dbfishR.Rcheck/dbfishR-manual.tex')
+if(file.exists(manual.tex)) { tinytex::latexmk(file = manual.tex)}
+detach('package:dbfishR', unload = T)
+unlink(c('./man', './NAMESPACE'), recursive = T)
+```
+
+5. Make docs
+
+```{r eval = F}
+devtools::document()
+devtools::build_vignettes()
+dir.create('./inst/doc', showWarnings = F, recursive = T)
+files <- list.files('./doc', pattern = 'html')
+lapply(files, function(x) { file.rename(paste0('./doc/', x), paste0('./inst/doc/', x)) } )
+unlink(c('./doc', './Meta', './.Rbuildignore'), recursive = T)
+detach('package:dbfishR', unload = T)
+```
+
+6. Test the install-ability
+
+```{r eval = F}
+devtools::install_local(upgrade = 'never')
+remove.packages('dbfishR')
+```
+
+7. Run the tests
+
+```{r eval = F}
+devtools::test()
+```
