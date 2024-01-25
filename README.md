@@ -6,10 +6,11 @@
 Programmatic access to the [Freshwater Research Institute’s](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute/) Fish and Amphibian database.
 
 
-inspired by 
-https://doi.org/10.1111/2041-210X.14226
-https://doi.org/10.5281/zenodo.4607742
-https://github.com/walkerke/tigris
+inspired by
+
+* https://doi.org/10.1111/2041-210X.14226
+* https://doi.org/10.5281/zenodo.4607742
+* https://github.com/walkerke/tigris
 
 # Installation
 
