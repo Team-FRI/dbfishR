@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Matt Wilson" />
+<meta name="author" content="Mark Newman" />
+
+<meta name="date" content="2024-01-25" />
+
+<title>Visualizing the Fish Population</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Visualizing the Fish Population</h1>
+<h4 class="author">Matt Wilson</h4>
+<h4 class="author">Mark Newman</h4>
+<h4 class="date">2024-01-25</h4>
+
+
+
+<p>When viewing any geo-spacial data, we need to set up a region of
+interest.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>state_name <span class="ot">&lt;-</span> <span class="st">&#39;Pennsylvania&#39;</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>county_name <span class="ot">&lt;-</span> <span class="st">&#39;York&#39;</span></span></code></pre></div>
+<p>Get the map information for all the counties in
+<code>state_name</code>, then filter that to the
+<code>county_name</code> we want to focus on. We focus on a single
+county because otherwise there will be too many small watersheds.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(tigris)</span></code></pre></div>
+<pre><code>## To enable caching of data, set `options(tigris_use_cache = TRUE)`
+## in your R script or .Rprofile.</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>map <span class="ot">&lt;-</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">counties</span>(<span class="at">state =</span> <span class="st">&#39;Pennsylvania&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">filter</span>(NAME <span class="sc">==</span> county_name)</span></code></pre></div>
+<pre><code>## Retrieving data for the year 2021</code></pre>
+<pre><code>## 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |                                                                      |   1%
+  |                                                                            
+  |=                                                                     |   1%
+  |                                                                            
+  |=                                                                     |   2%
+  |                                                                            
+  |==                                                                    |   2%
+  |                                                                            
+  |==                                                                    |   3%
+  |                                                                            
+  |==                                                                    |   4%
+  |                                                                            
+  |===                                                                   |   4%
+  |                                                                            
+  |===                                                                   |   5%
+  |                                                                            
+  |====                                                                  |   5%
+  |                                                                            
+  |====                                                                  |   6%
+  |                                                                            
+  |=====                                                                 |   6%
+  |                                                                            
+  |=====                                                                 |   7%
+  |                                                                            
+  |=====                                                                 |   8%
+  |                                                                            
+  |======                                                                |   8%
+  |                                                                            
+  |======                                                                |   9%
+  |                                                                            
+  |=======                                                               |   9%
+  |                                                                            
+  |=======                                                               |  10%
+  |                                                                            
+  |=======                                                               |  11%
+  |                                                                            
+  |========                                                              |  11%
+  |                                                                            
+  |========                                                              |  12%
+  |                                                                            
+  |=========                                                             |  12%
+  |                                                                            
+  |=========                                                             |  13%
+  |                                                                            
+  |=========                                                             |  14%
+  |                                                                            
+  |==========                                                            |  14%
+  |                                                                            
+  |==========                                                            |  15%
+  |                                                                            
+  |===========                                                           |  15%
+  |                                                                            
+  |===========                                                           |  16%
+  |                                                                            
+  |============                                                          |  16%
+  |                                                                            
+  |============                                                          |  17%
+  |                                                                            
+  |============                                                          |  18%
+  |                                                                            
+  |=============                                                         |  18%
+  |                                                                            
+  |=============                                                         |  19%
+  |                                                                            
+  |==============                                                        |  19%
+  |                                                                            
+  |==============                                                        |  20%
+  |                                                                            
+  |==============                                                        |  21%
+  |                                                                            
+  |===============                                                       |  21%
+  |                                                                            
+  |===============                                                       |  22%
+  |                                                                            
+  |================                                                      |  22%
+  |                                                                            
+  |================                                                      |  23%
+  |                                                                            
+  |================                                                      |  24%
+  |                                                                            
+  |=================                                                     |  24%
+  |                                                                            
+  |=================                                                     |  25%
+  |                                                                            
+  |==================                                                    |  25%
+  |                                                                            
+  |==================                                                    |  26%
+  |                                                                            
+  |===================                                                   |  26%
+  |                                                                            
+  |===================                                                   |  27%
+  |                                                                            
+  |===================                                                   |  28%
+  |                                                                            
+  |====================                                                  |  28%
+  |                                                                            
+  |====================                                                  |  29%
+  |                                                                            
+  |=====================                                                 |  29%
+  |                                                                            
+  |=====================                                                 |  30%
+  |                                                                            
+  |=====================                                                 |  31%
+  |                                                                            
+  |======================                                                |  31%
+  |                                                                            
+  |======================                                                |  32%
+  |                                                                            
+  |=======================                                               |  32%
+  |                                                                            
+  |=======================                                               |  33%
+  |                                                                            
+  |=======================                                               |  34%
+  |                                                                            
+  |========================                                              |  34%
+  |                                                                            
+  |========================                                              |  35%
+  |                                                                            
+  |=========================                                             |  35%
+  |                                                                            
+  |=========================                                             |  36%
+  |                                                                            
+  |==========================                                            |  36%
+  |                                                                            
+  |==========================                                            |  37%
+  |                                                                            
+  |==========================                                            |  38%
+  |                                                                            
+  |===========================                                           |  38%
+  |                                                                            
+  |===========================                                           |  39%
+  |                                                                            
+  |============================                                          |  39%
+  |                                                                            
+  |============================                                          |  40%
+  |                                                                            
+  |============================                                          |  41%
+  |                                                                            
+  |=============================                                         |  41%
+  |                                                                            
+  |=============================                                         |  42%
+  |                                                                            
+  |==============================                                        |  42%
+  |                                                                            
+  |==============================                                        |  43%
+  |                                                                            
+  |==============================                                        |  44%
+  |                                                                            
+  |===============================                                       |  44%
+  |                                                                            
+  |===============================                                       |  45%
+  |                                                                            
+  |================================                                      |  45%
+  |                                                                            
+  |================================                                      |  46%
+  |                                                                            
+  |=================================                                     |  46%
+  |                                                                            
+  |=================================                                     |  47%
+  |                                                                            
+  |=================================                                     |  48%
+  |                                                                            
+  |==================================                                    |  48%
+  |                                                                            
+  |==================================                                    |  49%
+  |                                                                            
+  |===================================                                   |  49%
+  |                                                                            
+  |===================================                                   |  50%
+  |                                                                            
+  |===================================                                   |  51%
+  |                                                                            
+  |====================================                                  |  51%
+  |                                                                            
+  |====================================                                  |  52%
+  |                                                                            
+  |=====================================                                 |  52%
+  |                                                                            
+  |=====================================                                 |  53%
+  |                                                                            
+  |=====================================                                 |  54%
+  |                                                                            
+  |======================================                                |  54%
+  |                                                                            
+  |======================================                                |  55%
+  |                                                                            
+  |=======================================                               |  55%
+  |                                                                            
+  |=======================================                               |  56%
+  |                                                                            
+  |========================================                              |  56%
+  |                                                                            
+  |========================================                              |  57%
+  |                                                                            
+  |========================================                              |  58%
+  |                                                                            
+  |=========================================                             |  58%
+  |                                                                            
+  |=========================================                             |  59%
+  |                                                                            
+  |==========================================                            |  59%
+  |                                                                            
+  |==========================================                            |  60%
+  |                                                                            
+  |==========================================                            |  61%
+  |                                                                            
+  |===========================================                           |  61%
+  |                                                                            
+  |===========================================                           |  62%
+  |                                                                            
+  |============================================                          |  62%
+  |                                                                            
+  |============================================                          |  63%
+  |                                                                            
+  |============================================                          |  64%
+  |                                                                            
+  |=============================================                         |  64%
+  |                                                                            
+  |=============================================                         |  65%
+  |                                                                            
+  |==============================================                        |  65%
+  |                                                                            
+  |==============================================                        |  66%
+  |                                                                            
+  |===============================================                       |  66%
+  |                                                                            
+  |===============================================                       |  67%
+  |                                                                            
+  |===============================================                       |  68%
+  |                                                                            
+  |================================================                      |  68%
+  |                                                                            
+  |================================================                      |  69%
+  |                                                                            
+  |=================================================                     |  69%
+  |                                                                            
+  |=================================================                     |  70%
+  |                                                                            
+  |=================================================                     |  71%
+  |                                                                            
+  |==================================================                    |  71%
+  |                                                                            
+  |==================================================                    |  72%
+  |                                                                            
+  |===================================================                   |  72%
+  |                                                                            
+  |===================================================                   |  73%
+  |                                                                            
+  |===================================================                   |  74%
+  |                                                                            
+  |====================================================                  |  74%
+  |                                                                            
+  |====================================================                  |  75%
+  |                                                                            
+  |=====================================================                 |  75%
+  |                                                                            
+  |=====================================================                 |  76%
+  |                                                                            
+  |======================================================                |  76%
+  |                                                                            
+  |======================================================                |  77%
+  |                                                                            
+  |======================================================                |  78%
+  |                                                                            
+  |=======================================================               |  78%
+  |                                                                            
+  |=======================================================               |  79%
+  |                                                                            
+  |========================================================              |  79%
+  |                                                                            
+  |========================================================              |  80%
+  |                                                                            
+  |========================================================              |  81%
+  |                                                                            
+  |=========================================================             |  81%
+  |                                                                            
+  |=========================================================             |  82%
+  |                                                                            
+  |==========================================================            |  82%
+  |                                                                            
+  |==========================================================            |  83%
+  |                                                                            
+  |==========================================================            |  84%
+  |                                                                            
+  |===========================================================           |  84%
+  |                                                                            
+  |===========================================================           |  85%
+  |                                                                            
+  |============================================================          |  85%
+  |                                                                            
+  |============================================================          |  86%
+  |                                                                            
+  |=============================================================         |  86%
+  |                                                                            
+  |=============================================================         |  87%
+  |                                                                            
+  |=============================================================         |  88%
+  |                                                                            
+  |==============================================================        |  88%
+  |                                                                            
+  |==============================================================        |  89%
+  |                                                                            
+  |===============================================================       |  89%
+  |                                                                            
+  |===============================================================       |  90%
+  |                                                                            
+  |===============================================================       |  91%
+  |                                                                            
+  |================================================================      |  91%
+  |                                                                            
+  |================================================================      |  92%
+  |                                                                            
+  |=================================================================     |  92%
+  |                                                                            
+  |=================================================================     |  93%
+  |                                                                            
+  |=================================================================     |  94%
+  |                                                                            
+  |==================================================================    |  94%
+  |                                                                            
+  |==================================================================    |  95%
+  |                                                                            
+  |===================================================================   |  95%
+  |                                                                            
+  |===================================================================   |  96%
+  |                                                                            
+  |====================================================================  |  96%
+  |                                                                            
+  |====================================================================  |  97%
+  |                                                                            
+  |====================================================================  |  98%
+  |                                                                            
+  |===================================================================== |  98%
+  |                                                                            
+  |===================================================================== |  99%
+  |                                                                            
+  |======================================================================|  99%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+<p>Lets look at the region we have so far. <code>ggplot2</code> paints
+in layers, so this is a very useful exercise.</p>
+<p>Hint: For those familiar with <code>ggplot2</code>, but not
+geo-spacial, an <code>aes()</code> is implicitly constructed in
+<code>geom_sf()</code> by searching <code>map</code> for a polygon type
+column. This means that adding <code>aes(geometry = geometry)</code> was
+redundant.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">ggplot</span>(map, <span class="fu">aes</span>(<span class="at">geometry =</span> geometry)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">geom_sf</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Lets get all the watersheds in and around our region of interest.
+<code>FedData</code> provides clean access to this information.</p>
+<p><strong>Hint</strong>: <code>FedData</code>’s <code>get_wbd()</code>
+and
+`<code>functions can be very slow. If you have any interest in looking at the data more than once, make sure to use</code>extraction.dir`.</p>
+<p><strong>Hint</strong>: When requesting a single boundary,
+<code>get_wbd()</code> has an interesting re-run functionality. On the
+first call it returns a <code>data.frame()</code> of the information we
+want. On the second call it returns a <code>list()</code> of
+<code>data.frame()</code>. To provide a consistent experience we need
+some hackery.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(FedData)</span></code></pre></div>
+<pre><code>## The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
+## which was just loaded, will retire in October 2023.
+## Please refer to R-spatial evolution reports for details, especially
+## https://r-spatial.org/r/2023/05/15/evolution4.html.
+## It may be desirable to make the sf package available;
+## package maintainers should consider adding sf to Suggests:.
+## The sp package is now running under evolution status 2
+##      (status 2 uses the sf package in place of rgdal)</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">library</span>(rappdirs)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>extraction.dir <span class="ot">&lt;-</span> <span class="fu">user_cache_dir</span>(<span class="st">&quot;FedData&quot;</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(extraction.dir)) { <span class="fu">dir.create</span>(extraction.dir, <span class="at">recursive =</span> T) }</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>watersheds <span class="ot">&lt;-</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  <span class="fu">get_wbd</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="at">template =</span> map[, <span class="st">&#39;geometry&#39;</span>],</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">label =</span> county_name,</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    <span class="at">extraction.dir =</span> extraction.dir)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="cf">if</span>(<span class="st">&#39;list&#39;</span> <span class="sc">%in%</span> <span class="fu">class</span>(watersheds)) { watersheds <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, watersheds) }</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="fu">ggplot</span>(map, <span class="fu">aes</span>(<span class="at">geometry =</span> geometry)) <span class="sc">+</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span> </span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> watersheds, <span class="fu">aes</span>(<span class="at">geometry =</span> geom), <span class="at">alpha =</span> <span class="dv">0</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Lets download the actual streams.</p>
+<p><strong>Hint</strong>: <code>get_nhd()</code> has build in looping.
+This means we can use the full <code>watersheds</code> to get all the
+streams in all the watersheds in the same call.
+<strong>However</strong>, it is slow to the point of being unusable.
+Strongly consider using a manual loop. <code>interactive()</code> is
+used to hide the <code>txtProgressBar</code> when knitting.</p>
+<p><strong>Hint</strong>: The more layers on a chart, the harder it can
+be to tell them apart. We add in an <code>fill = &#39;orange&#39;</code> to help
+York county pop.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>hydro <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&#39;list&#39;</span>, <span class="at">length =</span> <span class="fu">nrow</span>(watersheds))</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">interactive</span>()) { pb <span class="ot">=</span> <span class="fu">txtProgressBar</span>(<span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fu">nrow</span>(watersheds), <span class="at">style =</span> <span class="dv">3</span>) }</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(watersheds)) {</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="fu">get_nhd</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>      <span class="at">template =</span> watersheds[i,],</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>      <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">&#39;%s_%s&#39;</span>, county_name, watersheds<span class="sc">$</span>huc12[i]),</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>      <span class="at">extraction.dir =</span> extraction.dir)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  hydro[[i]] <span class="ot">&lt;-</span> tmp<span class="sc">$</span>Flowline</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">interactive</span>()) { <span class="fu">setTxtProgressBar</span>(pb, i) }</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>}</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">interactive</span>()) { <span class="fu">close</span>(pb) }</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>hydro <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, hydro)</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="fu">ggplot</span>(map, <span class="fu">aes</span>(<span class="at">geometry =</span> geometry)) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">color =</span> <span class="st">&#39;black&#39;</span>, <span class="at">fill =</span> <span class="st">&#39;orange&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> watersheds, <span class="fu">aes</span>(<span class="at">geometry =</span> geom), <span class="at">alpha =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> hydro, <span class="fu">aes</span>(<span class="at">geometry =</span> geom), <span class="at">color =</span> <span class="st">&#39;blue&#39;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

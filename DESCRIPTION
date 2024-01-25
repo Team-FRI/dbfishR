@@ -18,6 +18,10 @@ Authors@R: c(
         family = "Purcell",
         role = c("aut")),
     person(
+        given = "Sara",
+        family = "Ashcraft",
+        role = c("aut")),
+    person(
         given = "Mark",
         family = "Newman",
         role = c("aut", "cre"),
@@ -32,7 +36,11 @@ Imports:
 Suggests:
     rmarkdown,
     knitr,
-    testthat
+    testthat,
+    ggplot2,
+    FedData,
+    tigris,
+    dplyr
 License: MIT + file LICENSE
 URL: https://github.com/markanewman/dbfishR
 BugReports: https://github.com/markanewman/dbfishR/issues

@@ -5,7 +5,7 @@
 \title{fetch_dbfishR}
 \usage{
 fetch_dbfishR(
-  url = getOption("dbfishR_url"),
+  url = getOption("dbfishR_data_url"),
   cache = getOption("dbfishR_use_cache"),
   cache_dir = getOption("dbfishR_cache_dir"),
   refresh = getOption("dbfishR_refresh"),

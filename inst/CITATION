@@ -15,6 +15,10 @@ rref <- bibentry(
         family = "Purcell",
         role = c("aut")),
     person(
+        given = "Sara",
+        family = "Ashcraft",
+        role = c("aut")),
+    person(
         given = "Mark",
         family = "Newman",
         role = c("aut", "cre"),

@@ -1,0 +1,113 @@
+---
+title: 'Visualizing the Fish Population'
+author:
+  - Matt Wilson
+  - Mark Newman
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+output:
+  rmarkdown::html_vignette
+bibliography: bib.bib
+vignette: >
+  %\VignetteIndexEntry{Visualizing the Fish Population}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+When viewing any geo-spacial data, we need to set up a region of interest.
+
+```{r}
+state_name <- 'Pennsylvania'
+county_name <- 'York'
+```
+
+Get the map information for all the counties in `state_name`, then filter that to the `county_name` we want to focus on.
+We focus on a single county because otherwise there will be too many small watersheds.
+
+```{r}
+library(dplyr)
+library(tigris)
+
+map <-
+  counties(state = 'Pennsylvania') %>%
+  filter(NAME == county_name)
+```
+
+Lets look at the region we have so far.
+`ggplot2` paints in layers, so this is a very useful exercise.
+
+Hint: For those familiar with `ggplot2`, but not geo-spacial, an `aes()` is implicitly constructed in `geom_sf()` by searching `map` for a polygon type column.
+This means that adding `aes(geometry = geometry)` was redundant.
+
+```{r}
+library(ggplot2)
+
+ggplot(map, aes(geometry = geometry)) +
+  theme_bw() + 
+  geom_sf()
+```
+
+Lets get all the watersheds in and around our region of interest.
+`FedData` provides clean access to this information.
+
+**Hint**: `FedData`'s `get_wbd()` and `` functions can be very slow.
+If you have any interest in looking at the data more than once, make sure to use `extraction.dir`.
+
+**Hint**: When requesting a single boundary, `get_wbd()` has an interesting re-run functionality.
+On the first call it returns a `data.frame()` of the information we want.
+On the second call it returns a `list()` of `data.frame()`.
+To provide a consistent experience we need some hackery. 
+
+```{r}
+library(FedData)
+library(rappdirs)
+
+extraction.dir <- user_cache_dir("FedData")
+if(!dir.exists(extraction.dir)) { dir.create(extraction.dir, recursive = T) }
+
+watersheds <-
+  get_wbd(
+    template = map[, 'geometry'],
+    label = county_name,
+    extraction.dir = extraction.dir)
+if('list' %in% class(watersheds)) { watersheds <- do.call(rbind, watersheds) }
+
+ggplot(map, aes(geometry = geometry)) +
+  theme_bw() + 
+  geom_sf() + 
+  geom_sf(data = watersheds, aes(geometry = geom), alpha = 0)
+```
+
+Lets download the actual streams.
+
+**Hint**: `get_nhd()` has build in looping.
+This means we can use the full `watersheds` to get all the streams in all the watersheds in the same call.
+**However**, it is slow to the point of being unusable.
+Strongly consider using a manual loop.
+`interactive()` is used to hide the `txtProgressBar` when knitting.
+
+**Hint**: The more layers on a chart, the harder it can be to tell them apart.
+We add in an `fill = 'orange'` to help York county pop.
+
+```{r}
+hydro <- vector(mode = 'list', length = nrow(watersheds))
+if(interactive()) { pb = txtProgressBar(min = 0, max = nrow(watersheds), style = 3) }
+for(i in 1:nrow(watersheds)) {
+  tmp <-
+    get_nhd(
+      template = watersheds[i,],
+      label = sprintf('%s_%s', county_name, watersheds$huc12[i]),
+      extraction.dir = extraction.dir)
+  hydro[[i]] <- tmp$Flowline
+  if(interactive()) { setTxtProgressBar(pb, i) }
+}
+if(interactive()) { close(pb) }
+hydro <- do.call(rbind, hydro)
+
+ggplot(map, aes(geometry = geometry)) +
+  theme_bw() + 
+  geom_sf(color = 'black', fill = 'orange') + 
+  geom_sf(data = watersheds, aes(geometry = geom), alpha = 0) + 
+  geom_sf(data = hydro, aes(geometry = geom), color = 'blue')
+```
