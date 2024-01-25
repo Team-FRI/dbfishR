@@ -6,6 +6,6 @@
     options('dbfishR_cache_dir' = rappdirs::user_cache_dir("dbfishR"))
     options('dbfishR_refresh' = F)
     options('dbfishR_progress' = T)
-
+    
     packageStartupMessage(sprintf("Caching enabled by default to [%s]", getOption('dbfishR_cache_dir')))
   }

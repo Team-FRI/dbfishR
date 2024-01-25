@@ -12,7 +12,7 @@
 
 <meta name="author" content="Mark Newman" />
 
-<meta name="date" content="2024-01-24" />
+<meta name="date" content="2024-01-25" />
 
 <title>Rebuild</title>
 
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Rebuild</h1>
 <h4 class="author">Mark Newman</h4>
-<h4 class="date">2024-01-24</h4>
+<h4 class="date">2024-01-25</h4>
 
 
 
@@ -367,12 +367,13 @@ folder will vary based on where the repo was cloned.</li>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&#39;c:/repos/markanewman/dbfishR&#39;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">c</span>(<span class="st">&#39;./man&#39;</span>, <span class="st">&#39;./inst/doc&#39;</span>, <span class="st">&#39;./NAMESPACE&#39;</span>), <span class="at">recursive =</span> T)</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
-<li>Run the pre-build checks.</li>
+<li>Run the pre-build checks. <code>manual.tex</code> allows for
+debuging bad PDF knits</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>check_dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>(<span class="at">manual =</span> T, <span class="at">vignettes =</span> T, <span class="at">check_dir =</span> check_dir)</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>manual.tex <span class="ot">&lt;-</span> <span class="fu">file.path</span>(check_dir, <span class="st">&#39;/dbfishR.Rcheck/dbfishR-manual.tex&#39;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(manual.tex)) { tinytex<span class="sc">::</span><span class="fu">latexmk</span>(<span class="at">file =</span> manual.tex)}</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">file.exists</span>(manual.tex)) { tinytex<span class="sc">::</span><span class="fu">latexmk</span>(<span class="at">file =</span> manual.tex) }</span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">detach</span>(<span class="st">&#39;package:dbfishR&#39;</span>, <span class="at">unload =</span> T)</span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">c</span>(<span class="st">&#39;./man&#39;</span>, <span class="st">&#39;./NAMESPACE&#39;</span>), <span class="at">recursive =</span> T)</span></code></pre></div>
 <ol start="5" style="list-style-type: decimal">

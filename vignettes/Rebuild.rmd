@@ -42,12 +42,13 @@ unlink(c('./man', './inst/doc', './NAMESPACE'), recursive = T)
 ```
 
 4. Run the pre-build checks.
+   `manual.tex` allows for debuging bad PDF knits
 
 ```{r eval = F}
 check_dir <- tempdir()
 devtools::check(manual = T, vignettes = T, check_dir = check_dir)
 manual.tex <- file.path(check_dir, '/dbfishR.Rcheck/dbfishR-manual.tex')
-if(file.exists(manual.tex)) { tinytex::latexmk(file = manual.tex)}
+if(file.exists(manual.tex)) { tinytex::latexmk(file = manual.tex) }
 detach('package:dbfishR', unload = T)
 unlink(c('./man', './NAMESPACE'), recursive = T)
 ```

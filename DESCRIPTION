@@ -22,8 +22,7 @@ Authors@R: c(
     person(
         given = "Kevin",
         family = "Purcell",
-        role = c("aut"))
-)
+        role = c("aut")))
 Depends:
     R (>= 4.0.0)
 Imports:
