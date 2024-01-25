@@ -12,3 +12,12 @@ get_fish_survey(...)
 \description{
 retrieves the fish survey.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_fish_survey()
+View(data)
+}
+
+}

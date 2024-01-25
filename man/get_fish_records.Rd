@@ -12,3 +12,12 @@ get_fish_records(...)
 \description{
 retrieves the fish records.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_fish_records()
+View(data)
+}
+
+}

@@ -24,6 +24,14 @@ get_table <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_discharge_event_info()
+#' View(data)
+#' }
 #'
 get_discharge_event_info <-
   function(...) {
@@ -37,11 +45,18 @@ get_discharge_event_info <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_discharge_records()
+#' View(data)
+#' }
 #'
 get_discharge_records <-
   function(...) {
     get_table(table = 'DischargeRecords', ...) }
-
 
 #' @title get_events
 #' 
@@ -50,6 +65,14 @@ get_discharge_records <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_events()
+#' View(data)
+#' }
 #'
 get_events <-
   function(...) {
@@ -62,6 +85,14 @@ get_events <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_fish_records()
+#' View(data)
+#' }
 #'
 get_fish_records <-
   function(...) {
@@ -74,6 +105,14 @@ get_fish_records <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_fish_survey()
+#' View(data)
+#' }
 #'
 get_fish_survey <-
   function(...) {
@@ -86,6 +125,14 @@ get_fish_survey <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_fish_tally()
+#' View(data)
+#' }
 #'
 get_fish_tally <-
   function(...) {
@@ -98,6 +145,14 @@ get_fish_tally <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_particle_size()
+#' View(data)
+#' }
 #'
 get_particle_size <-
   function(...) {
@@ -110,6 +165,14 @@ get_particle_size <-
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#' 
+#' @examples
+#'
+#' \dontrun{
+#' library(dbfishR)
+#' data <- get_sites()
+#' View(data)
+#' }
 #'
 get_sites <-
   function(...) {

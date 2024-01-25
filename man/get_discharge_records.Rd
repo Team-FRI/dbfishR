@@ -12,3 +12,12 @@ get_discharge_records(...)
 \description{
 retrieves the discharge records.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_discharge_records()
+View(data)
+}
+
+}

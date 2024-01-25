@@ -12,3 +12,12 @@ get_events(...)
 \description{
 retrieves the events.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_events()
+View(data)
+}
+
+}

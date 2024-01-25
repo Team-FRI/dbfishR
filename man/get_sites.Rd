@@ -12,3 +12,12 @@ get_sites(...)
 \description{
 retrieves the sites.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_sites()
+View(data)
+}
+
+}

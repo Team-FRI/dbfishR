@@ -12,3 +12,12 @@ get_fish_tally(...)
 \description{
 retrieves the fish tally.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_fish_tally()
+View(data)
+}
+
+}

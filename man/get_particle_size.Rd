@@ -12,3 +12,12 @@ get_particle_size(...)
 \description{
 retrieves the particle size.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_particle_size()
+View(data)
+}
+
+}

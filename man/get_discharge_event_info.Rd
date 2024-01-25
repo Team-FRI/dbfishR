@@ -12,3 +12,12 @@ get_discharge_event_info(...)
 \description{
 retrieves the discharge event info.
 }
+\examples{
+
+\dontrun{
+library(dbfishR)
+data <- get_discharge_event_info()
+View(data)
+}
+
+}
