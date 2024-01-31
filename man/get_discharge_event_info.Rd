@@ -2,15 +2,18 @@
 % Please edit documentation in R/get_table.R
 \name{get_discharge_event_info}
 \alias{get_discharge_event_info}
-\title{get_discharge_event_info}
+\title{Retrieves discharge events}
 \usage{
 get_discharge_event_info(...)
 }
 \arguments{
 \item{...}{additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}}
 }
+\value{
+\code{\link[base]{data.frame}}
+}
 \description{
-retrieves the discharge event info.
+Retrieve discharge event data from the FRI database
 }
 \examples{
 

@@ -9,6 +9,7 @@ editor_options:
   chunk_output_type: console
 output:
   rmarkdown::html_vignette
+bibliography: bib.bib
 vignette: >
   %\VignetteIndexEntry{FRI Data Entry SOP}
   %\VignetteEncoding{UTF-8}
@@ -25,7 +26,7 @@ This way you have your site data available in one place when scouting or surveyi
 After entering all data on a field sheet, initial each page at the lower right to indicate your work.
 Then when a survey packet is complete put a check ($\checkmark$) next to your initials on the survey cover sheet to indicate you have completed the packet.
 
-Location: https://github.com/markanewman/dbfishR
+Location: https://github.com/Team-FRI/dbfishR
 
 Open the "Template.accdb" file for the data entry.
 Save file with your last name or collaborator name in place of "Template".

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Mark Newman" />
 
-<meta name="date" content="2024-01-25" />
+<meta name="date" content="2024-01-31" />
 
 <title>Rebuild</title>
 
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Rebuild</h1>
 <h4 class="author">Mark Newman</h4>
-<h4 class="date">2024-01-25</h4>
+<h4 class="date">2024-01-31</h4>
 
 
 
@@ -348,7 +348,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="steps" class="section level1">
 <h1>Steps</h1>
 <ol style="list-style-type: decimal">
-<li><p>Clone the repo from <a href="https://github.com/markanewman/dbfishR">here</a>.</p></li>
+<li><p>Clone the repo from <a href="https://github.com/Team-FRI/dbfishR">here</a>.</p></li>
 <li><p>Load packages</p></li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">installed.packages</span>()</span>
@@ -364,7 +364,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li>Set working directory and clean files that will be regenerated. This
 folder will vary based on where the repo was cloned.</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&#39;c:/repos/markanewman/dbfishR&#39;</span>)</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&#39;c:/repos/Team-FRI/dbfishR&#39;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">c</span>(<span class="st">&#39;./man&#39;</span>, <span class="st">&#39;./inst/doc&#39;</span>, <span class="st">&#39;./NAMESPACE&#39;</span>), <span class="at">recursive =</span> T)</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Run the pre-build checks. <code>manual.tex</code> allows for

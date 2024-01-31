@@ -1,9 +1,9 @@
 Package: dbfishR
 Type: Package
-Version: 0.0.1
-Date: 2024-01-01
+Version: 0.0.2
+Date: 2024-01-31
 Title: dbfishR
-Description: Programmatic access to the Freshwater Research Institute’s Fish and Amphibian database.
+Description: Programmatic access to the [Freshwater Research Institute](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute)’s Fish and Amphibian database.
 Authors@R: c(
     person(
         given = "Matt ",
@@ -42,8 +42,8 @@ Suggests:
     tigris,
     dplyr
 License: MIT + file LICENSE
-URL: https://github.com/markanewman/dbfishR
-BugReports: https://github.com/markanewman/dbfishR/issues
+URL: https://github.com/Team-FRI/dbfishR
+BugReports: https://github.com/Team-FRI/dbfishR/issues
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 VignetteBuilder:

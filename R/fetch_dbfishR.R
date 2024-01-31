@@ -1,7 +1,11 @@
-#' @title fetch_dbfishR
-#' 
+#' @name fetch_dbfishR
+#'
+#' @title Retrieve FRI data
+#'
 #' @description Helper function to download FRI's data
-#' 
+#'
+#' @keywords internal
+#'
 #' @importFrom httr write_disk GET progress
 #'
 #' @param url URL for FRI's AccessDB database.
@@ -51,10 +55,14 @@ fetch_dbfishR <-
     file_loc
   }
 
-#' @title fetch_dbfishR_template
-#' 
+#' @name fetch_dbfishR_template
+#'
+#' @title Retrieve FRI's data template
+#'
 #' @description Helper function to download FRI's data template so you can contribute
-#' 
+#'
+#' @keywords internal
+#'
 #' @importFrom httr write_disk GET progress
 #'
 #' @param url URL for FRI's data template.

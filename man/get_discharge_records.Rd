@@ -2,15 +2,18 @@
 % Please edit documentation in R/get_table.R
 \name{get_discharge_records}
 \alias{get_discharge_records}
-\title{get_discharge_records}
+\title{Retrieve the discharge records}
 \usage{
 get_discharge_records(...)
 }
 \arguments{
 \item{...}{additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}}
 }
+\value{
+\code{\link[base]{data.frame}}
+}
 \description{
-retrieves the discharge records.
+Retrieve discharge record data from the \href{https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute}{FRI} database
 }
 \examples{
 

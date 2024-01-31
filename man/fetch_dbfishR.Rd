@@ -2,7 +2,7 @@
 % Please edit documentation in R/fetch_dbfishR.R
 \name{fetch_dbfishR}
 \alias{fetch_dbfishR}
-\title{fetch_dbfishR}
+\title{Retrieve FRI data}
 \usage{
 fetch_dbfishR(
   url = getOption("dbfishR_data_url"),
@@ -29,3 +29,4 @@ The local path to FRI's AccessDB
 \description{
 Helper function to download FRI's data
 }
+\keyword{internal}

@@ -2,15 +2,18 @@
 % Please edit documentation in R/get_table.R
 \name{get_fish_records}
 \alias{get_fish_records}
-\title{get_fish_records}
+\title{Retrieve the fish records}
 \usage{
 get_fish_records(...)
 }
 \arguments{
 \item{...}{additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}}
 }
+\value{
+\code{\link[base]{data.frame}}
+}
 \description{
-retrieves the fish records.
+Retrieve fish record data from the \href{https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute}{FRI} database
 }
 \examples{
 

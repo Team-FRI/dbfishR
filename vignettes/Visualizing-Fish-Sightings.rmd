@@ -1,5 +1,5 @@
 ---
-title: 'Visualizing the Fish Population'
+title: 'Visualizing Fish Sightings'
 author:
   - Matt Wilson
   - Mark Newman
@@ -10,7 +10,7 @@ output:
   rmarkdown::html_vignette
 bibliography: bib.bib
 vignette: >
-  %\VignetteIndexEntry{Visualizing the Fish Population}
+  %\VignetteIndexEntry{Visualizing Fish Sightings}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---

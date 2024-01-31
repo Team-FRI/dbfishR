@@ -3,7 +3,7 @@ rref <- bibentry(
    title = "dbfishR: Programmatic access to the Freshwater Research Institute's Fish and Amphibian database",
    author = c(
     person(
-        given = "Matt ",
+        given = "Matt",
         family = "Wilson",
         role = c("aut", "cph")),
     person(
@@ -25,4 +25,4 @@ rref <- bibentry(
         email = "mark@trinetteandmark.com",
         comment = c(ORCID = "0000-0001-6155-438X"))),
    year = 2024,
-   url = "https://github.com/markanewman/dbfishR")
+   url = "https://github.com/Team-FRI/dbfishR")

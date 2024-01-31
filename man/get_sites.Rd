@@ -2,15 +2,18 @@
 % Please edit documentation in R/get_table.R
 \name{get_sites}
 \alias{get_sites}
-\title{get_sites}
+\title{Retrieve the sites}
 \usage{
 get_sites(...)
 }
 \arguments{
 \item{...}{additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}}
 }
+\value{
+\code{\link[base]{data.frame}}
+}
 \description{
-retrieves the sites.
+Retrieve site data from the \href{https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute}{FRI} database
 }
 \examples{
 

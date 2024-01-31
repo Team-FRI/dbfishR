@@ -25,31 +25,21 @@ pkgs <- installed.packages()
 if (!('devtools' %in% pkgs)) { install.packages('devtools') }
 if ('dbfishR' %in% pkgs) { remove.packages('dbfishR') }
 
-devtools::install_github(repo = 'markanewman/dbfishR', upgrade = 'never')
+devtools::install_github(repo = 'Team-FRI/dbfishR', upgrade = 'never')
 ```
 
+# Use
 
+Basic retrieval looks like this
 
-**This currently includes**:
+```{r}
+library(dbfishR)
+View(get_sites())
+```
 
-- [x] An empty database ([CompleteDataEntry-Template](https://github.com/Team-FRI/UW-Data-Entry/releases/tag/V1))
-- [x] An example database from SU samples ([ExampleData](https://github.com/Team-FRI/UW-Data-Entry/releases/tag/V1))
-- [ ] A ReadMe folder (placeholder for now, updates to come)
-- [ ] Code and quality control output folders that we are in-process of updating
-- [x] The code folder has a generalized script for reading DB tables and one for quality control outputs
-- [ ] QC outputs are setup to save directly to the QC_outputs/Static_Archive folder
+For examples please refer to the vignettes included in the package
 
-**How to contribute**:
-
-1. Download the template called [CompleteDataEntry-Template.accdb](https://github.com/Team-FRI/UW-Data-Entry/releases/tag/V1) 
-2. Enter all your information
-3. Open an [Issue](https://github.com/Team-FRI/UW-Data-Entry/issues/new), attaching your template DB.
-4. We will run the _~/code/ImportQC.rmd_ file to validate the date is in the correct format.
-5. If it is, we will merge the data into the Master database called [ExampleData.accdb](https://github.com/Team-FRI/UW-Data-Entry/releases/tag/V1) 
-
-**More to come and suggestions welcome!**
-
-Current projects include:
-
-- [ ] Trendline-based outlier detection rather than k-means
-- [ ] More summary and exploration for abiotic and meta data
+- [ ] FRI Data Entry SOP
+- [x] Visualizing Fish Sightings
+- [ ] Data Imputation suggestions
+- [ ] Code explanation for papers that used this data

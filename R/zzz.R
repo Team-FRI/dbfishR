@@ -1,8 +1,8 @@
 #' @importFrom rappdirs user_cache_dir
 .onAttach <-
   function(libname, pkgname) {
-    options('dbfishR_data_url' = 'https://github.com/markanewman/dbfishR/releases/download/v1.0/DataSource.accdb')
-    options('dbfishR_template_url' = 'https://github.com/markanewman/dbfishR/releases/download/v1.0/Template.accdb')
+    options('dbfishR_data_url' = 'https://github.com/Team-FRI/dbfishR/releases/download/v1.0/DataSource.accdb')
+    options('dbfishR_template_url' = 'https://github.com/Team-FRI/dbfishR/releases/download/v1.0/Template.accdb')
     options('dbfishR_use_cache' = T)
     options('dbfishR_cache_dir' = rappdirs::user_cache_dir("dbfishR"))
     options('dbfishR_refresh' = F)

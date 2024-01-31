@@ -2,15 +2,18 @@
 % Please edit documentation in R/get_table.R
 \name{get_fish_tally}
 \alias{get_fish_tally}
-\title{get_fish_tally}
+\title{Retrieve the fish tally}
 \usage{
 get_fish_tally(...)
 }
 \arguments{
 \item{...}{additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}}
 }
+\value{
+\code{\link[base]{data.frame}}
+}
 \description{
-retrieves the fish tally.
+Retrieve fish tally data from the \href{https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute}{FRI} database
 }
 \examples{
 

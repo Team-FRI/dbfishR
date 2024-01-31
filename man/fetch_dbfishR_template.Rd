@@ -2,7 +2,7 @@
 % Please edit documentation in R/fetch_dbfishR.R
 \name{fetch_dbfishR_template}
 \alias{fetch_dbfishR_template}
-\title{fetch_dbfishR_template}
+\title{Retrieve FRI's data template}
 \usage{
 fetch_dbfishR_template(
   url = getOption("dbfishR_template_url"),
@@ -29,3 +29,4 @@ The local path to FRI's Template
 \description{
 Helper function to download FRI's data template so you can contribute
 }
+\keyword{internal}

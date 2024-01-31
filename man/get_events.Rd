@@ -2,15 +2,18 @@
 % Please edit documentation in R/get_table.R
 \name{get_events}
 \alias{get_events}
-\title{get_events}
+\title{Retrieve the events}
 \usage{
 get_events(...)
 }
 \arguments{
 \item{...}{additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}}
 }
+\value{
+\code{\link[base]{data.frame}}
+}
 \description{
-retrieves the events.
+Retrieve event data from the \href{https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute}{FRI} database
 }
 \examples{
 

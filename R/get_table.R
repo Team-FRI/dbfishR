@@ -1,13 +1,19 @@
-#' @title get_table
+#' @name get_table
+#'
+#' @title Get a table from the database
 #' 
-#' @description xxx
+#' @description Get a table from [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute)'s database
+#'
+#' @keywords internal
 #' 
 #' @importFrom RODBC odbcConnectAccess2007 sqlFetch odbcClose
 #'
 #' @param table the table to fetch from the db
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
 #'
-#' @return xxx
+#' @noRd
+#'
+#' @return \code{\link[base]{data.frame}}
 #'
 get_table <-
   function(table, ...) {
@@ -18,13 +24,17 @@ get_table <-
     table
   }
 
-#' @title get_discharge_event_info
+#' @name get_discharge_event_info
+#'
+#' @title Retrieves discharge events
 #' 
-#' @description retrieves the discharge event info.
+#' @description Retrieve discharge event data from the FRI database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'
@@ -39,13 +49,17 @@ get_discharge_event_info <-
     get_table(table = 'DischargeEventInfo', ...) }
 
 
-#' @title get_discharge_records
+#' @name get_discharge_records
+#'
+#' @title Retrieve the discharge records
 #' 
-#' @description retrieves the discharge records.
+#' @description Retrieve discharge record data from the [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute) database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'
@@ -59,13 +73,17 @@ get_discharge_records <-
   function(...) {
     get_table(table = 'DischargeRecords', ...) }
 
-#' @title get_events
+#' @name get_events
+#'
+#' @title Retrieve the events
 #' 
-#' @description retrieves the events.
+#' @description Retrieve event data from the [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute) database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'
@@ -79,13 +97,17 @@ get_events <-
   function(...) {
     get_table(table = 'Events', ...) }
 
-#' @title get_fish_records
+#' @name get_fish_records
+#'
+#' @title Retrieve the fish records
 #' 
-#' @description retrieves the fish records.
+#' @description Retrieve fish record data from the [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute) database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'
@@ -99,13 +121,17 @@ get_fish_records <-
   function(...) {
     get_table(table = 'FishRecords', ...) }
 
-#' @title get_fish_survey
+#' @name get_fish_survey
+#'
+#' @title Retrieve the fish survey
 #' 
-#' @description retrieves the fish survey.
+#' @description Retrieve fish survey data from the [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute) database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'
@@ -119,13 +145,17 @@ get_fish_survey <-
   function(...) {
     get_table(table = 'FishSurvey', ...) }
 
-#' @title get_fish_tally
+#' @name get_fish_tally
+#'
+#' @title Retrieve the fish tally
 #' 
-#' @description retrieves the fish tally.
+#' @description Retrieve fish tally data from the [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute) database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'
@@ -139,13 +169,17 @@ get_fish_tally <-
   function(...) {
     get_table(table = 'FishTally', ...) }
 
-#' @title get_particle_size
+#' @name get_particle_size
+#'
+#' @title Retrieves the particle size
 #' 
-#' @description retrieves the particle size.
+#' @description Retrieve particle size data from the [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute) database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'
@@ -159,13 +193,17 @@ get_particle_size <-
   function(...) {
     get_table(table = 'ParticleSize', ...) }
 
-#' @title get_sites
+#' @name get_sites
+#'
+#' @title Retrieve the sites
 #' 
-#' @description retrieves the sites.
+#' @description Retrieve site data from the [FRI](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute) database
 #' 
 #' @export
 #' 
 #' @param ... additional parameters to pass to \code{\link[dbfishR]{fetch_dbfishR}}
+#'
+#' @return \code{\link[base]{data.frame}}
 #' 
 #' @examples
 #'

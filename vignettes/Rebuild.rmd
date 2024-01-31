@@ -9,15 +9,15 @@ output:
 bibliography: bib.bib
 vignette: >
   %\VignetteIndexEntry{Rebuild}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 The following guides you through the full (re)build process.
 
 # Steps
 
-1. Clone the repo from [here](https://github.com/markanewman/dbfishR).
+1. Clone the repo from [here](https://github.com/Team-FRI/dbfishR).
 
 2. Load packages
 
@@ -37,7 +37,7 @@ if ('dbfishR' %in% pkgs) { remove.packages('dbfishR') }
    This folder will vary based on where the repo was cloned.
 
 ```{r eval = F}
-setwd('c:/repos/markanewman/dbfishR')
+setwd('c:/repos/Team-FRI/dbfishR')
 unlink(c('./man', './inst/doc', './NAMESPACE'), recursive = T)
 ```
 
