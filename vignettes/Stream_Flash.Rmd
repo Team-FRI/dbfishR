@@ -1,0 +1,155 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+#https://github.com/Team-FRI/dbfishR
+#devtools::install_github(repo = 'Team-FRI/dbfishR', force = TRUE)
+
+devtools::install_github(repo = 'leppott/ContDataQC', force = TRUE)
+
+get data
+
+```{r}
+library(dbfishR)
+
+sites <- get_sites()
+events <- get_events()
+events_meta <- merge(sites, events[,c("SiteCode","EventCode","WaterTemp","pH","SpecCond","Alk","DO")])
+```
+
+seperate out big and little fish
+
+```{r}
+fish_rec <- get_fish_records()
+
+brookie_count <- aggregate(ID~EventCode+Species+Pass, data = subset(fish_rec, Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
+colnames(brookie_count)[4] <- "TotalCount"
+small_brookie_count <- aggregate(ID~EventCode+Species+Pass, data = subset(fish_rec, Length_mm < 100 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
+colnames(small_brookie_count)[4] <- "SmallCount"
+big_brookie_count <- aggregate(ID~EventCode+Species+Pass, data = subset(fish_rec, Length_mm > 99 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
+colnames(big_brookie_count)[4] <- "BigCount"
+
+df_list <- list(brookie_count,small_brookie_count, big_brookie_count)
+all_brookies <- Reduce(function(x, y) merge(x,y, all= TRUE), df_list)
+
+all_brookies$SmallCount[is.na(all_brookies$SmallCount)] <- 0 #this allows the replace NA below to only take care of %100 YOY NAs
+all_brookies$YOYRatio <- all_brookies$SmallCount/(all_brookies$BigCount+all_brookies$SmallCount)
+all_brookies$YOYRatio[is.na(all_brookies$YOYRatio)] <- 1
+```
+
+Bring in water data
+
+```{r}
+
+#bring together with event data
+brookie_events <- merge(all_brookies, events_meta)
+
+#flashiness index
+#install.packages("remotes")
+#remotes::install_github("leppott/ContDataQC")
+
+library(ContDataQC)
+library(dataRetrieval)
+library(sf)
+#all of the state at once:
+#gage_df <- readNWISdata(stateCd = "PA", parameterCd = "00060", startDate = "1974-10-01", endDate = "1974-10-02")
+#select one HUC8 at once, this is for Upper West Branch Susquehanna. HUC 6 throws errors
+#gage_df <- readNWISdata(huc = "02050201", parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
+
+#To do a full HUC6 at once, just pick your HUC6 and auto-populate the subwatersheds (only works up to 9 HUC8 in a HUC6)
+HUC6 <- "020502"#West Branch Susquehanna
+#auto-generate
+HUC_list <-paste(rep(HUC6,10), seq(0, 9, length.out = 10), sep="0")
+gage_df_WB <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
+
+#Or rbind multiple HUC6 together:
+HUC6 <- "020503"#Lower Susquehanna
+#auto-generate
+HUC_list <-paste(rep(HUC6,10), seq(0, 9, length.out = 10), sep="0")
+gage_df_Low <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
+
+HUC6 <- "020501"#North Branch Susquehanna
+#auto-generate
+HUC_list <-paste(rep(HUC6,10), seq(0, 9, length.out = 10), sep="0")
+gage_df_NB <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
+
+#can add in as many HUCs as we want to cover the state
+gage_df <- do.call("rbind", list(gage_df_WB[,1:4], gage_df_NB[,1:4], gage_df_Low[,1:4]))
+
+```
+
+
+Make spacial objects
+
+```{r}
+
+
+#Create year to get annual R-B index
+gage_df$year <- sapply(strsplit(as.character(gage_df$dateTime), "-"),"[[",1)
+
+#Aggregate by year and site w/in the HUC
+R_B_HUC <- aggregate(X_00060_00003~year+site_no, data = gage_df, FUN = RBIcalc)
+colnames(R_B_HUC)[3] <- "RBI"
+
+station_meta <- readNWISsite(unique(R_B_HUC$site_no))
+#merge RBI and station meta data
+stations <- merge(R_B_HUC, station_meta)
+
+#subset stations by drainage area to compare apples to apples
+medium_stations <- subset(stations, drain_area_va > 10 & drain_area_va < 100)
+
+#Create spatial objects
+medium_stations_so <- st_as_sf(medium_stations,coords = c("dec_lat_va", "dec_long_va"))
+#remove NAs to create spatial object
+events_so <- st_as_sf(brookie_events[!is.na(brookie_events$SiteLon),], coords = c("SiteLat","SiteLon"))
+```
+
+Basic modeling
+
+```{r}
+
+#Spatial join
+fish_flow <- st_join(events_so, medium_stations_so, join = st_nearest_feature)
+
+#Prelim fun
+mod <- lm(TotalCount~RBI, data = fish_flow)
+summary(mod)
+
+mod2 <- lm(BigCount~RBI, data = fish_flow)
+summary(mod2)
+
+mod3 <- lm(SmallCount~RBI, data = fish_flow)
+summary(mod3)
+
+mod4 <- lm(YOYRatio~RBI, data = fish_flow)
+summary(mod4) #winner winner chicken dinner
+
+```
+
+Real models
+
+```{r}
+#Real models
+library(itsadug)
+
+gam.mod <- gam(YOYRatio~RBI, data = fish_flow, na.action = na.omit, method = "REML")
+summary(gam.mod)
+AIC(gam.mod) #211.2086
+plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE, main =gam.mod$formula)
+
+#Bring in water quality (as a landscape proxy) - much better models
+gam.mod <- gam(YOYRatio~RBI+SpecCond, data = fish_flow, na.action = na.omit, method = "REML")
+summary(gam.mod)
+AIC(gam.mod) #200.1027
+plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE, main =gam.mod$formula)
+plot_smooth(gam.mod, view="SpecCond", rm.ranef=FALSE, main =gam.mod$formula)
+
+gam.mod <- gam(YOYRatio~RBI+SpecCond+Alk, data = fish_flow, na.action = na.omit, method = "REML")
+summary(gam.mod)
+AIC(gam.mod) #194.8531
+plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE, main =gam.mod$formula)
+plot_smooth(gam.mod, view="SpecCond", rm.ranef=FALSE, main =gam.mod$formula)
+plot_smooth(gam.mod, view="Alk", rm.ranef=FALSE, main =gam.mod$formula)
+```
+
