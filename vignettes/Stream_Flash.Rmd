@@ -3,12 +3,18 @@ output: html_document
 editor_options: 
   chunk_output_type: console
 ---
-#https://github.com/Team-FRI/dbfishR
-#devtools::install_github(repo = 'Team-FRI/dbfishR', force = TRUE)
+https://github.com/Team-FRI/dbfishR
+devtools::install_github(repo = 'Team-FRI/dbfishR', force = TRUE)
 
 devtools::install_github(repo = 'leppott/ContDataQC', force = TRUE)
 
-get data
+
+We know many species have different niches and are more or less susceptible to specific environmental stressors depending on their life stage. One example is that adult fish are typically more vagile and able to move into refugia during high flow events than young-of-year might be. Adults might also be expected to be better able to hold position in strong current and resist displacement (i.e. being forced downstream) during spates. To look a specific instance of this pattern, we are going to compare brook trout population data from dbfishR to USGS flow data via the R-B Index of flashiness.
+
+
+To start, lets pull in sampling (event) data and site metadata from dbfishR. We don't need all of the survey metadata from each individual event for this analysis, so we'll just keep the water quality data with EventCode and merge with sites by SiteCode. 
+
+In order to compare flashiness to sampling data we'll need a column for year later on. Each EventCode starts with the 4-digit year, so this can be generated with a quick substring. 
 
 ```{r}
 library(dbfishR)
@@ -16,103 +22,96 @@ library(dbfishR)
 sites <- get_sites()
 events <- get_events()
 events_meta <- merge(sites, events[,c("SiteCode","EventCode","WaterTemp","pH","SpecCond","Alk","DO")])
+events_meta$year <-substring(as.character(events_meta$EventCode),1,4)
 ```
 
-seperate out big and little fish
+Now that we've got the water quality and site metadata we need to grab individual fish records as well. There are several species in dbfishR, so we're going to specify brook trout from "Pass 1" of sampling to make single and triple-pass sampling events comparable in this analysis. We'll then aggregate by EventCode and count how many records there are in each event (FUN = length). In order to compare adults and young-of-year counts we subset by fish length, generalizing YOY/juvenile to be fish under 100 mm and adults as those over 100 mm.
 
 ```{r}
 fish_rec <- get_fish_records()
 
-brookie_count <- aggregate(ID~EventCode+Species+Pass, data = subset(fish_rec, Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
+brookie_count <- aggregate(ID~EventCode, data = subset(fish_rec, Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
 colnames(brookie_count)[4] <- "TotalCount"
-small_brookie_count <- aggregate(ID~EventCode+Species+Pass, data = subset(fish_rec, Length_mm < 100 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
+small_brookie_count <- aggregate(ID~EventCode, data = subset(fish_rec, Length_mm < 100 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
 colnames(small_brookie_count)[4] <- "SmallCount"
-big_brookie_count <- aggregate(ID~EventCode+Species+Pass, data = subset(fish_rec, Length_mm > 99 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
+big_brookie_count <- aggregate(ID~EventCode, data = subset(fish_rec, Length_mm > 99 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
 colnames(big_brookie_count)[4] <- "BigCount"
+```
 
+Now that we have brook trout counts by sampling event and size classes,We'll merge these. In addition, we're going to add one more column to the data frame: a ratio of young-of-year fish to total fish counts from each sample. This can act as a metric of young-of-year success in a given year relative to the size of the adult population. Just merge this with the site-event data frame we created above and now all our brook trout counts and ratio are associated with site and sample metadata.
+
+```{r}
 df_list <- list(brookie_count,small_brookie_count, big_brookie_count)
 all_brookies <- Reduce(function(x, y) merge(x,y, all= TRUE), df_list)
 
-all_brookies$SmallCount[is.na(all_brookies$SmallCount)] <- 0 #this allows the replace NA below to only take care of %100 YOY NAs
+all_brookies$SmallCount[is.na(all_brookies$SmallCount)] <- 0 #this allows the replace NA below to only take care of 100% YOY NAs
 all_brookies$YOYRatio <- all_brookies$SmallCount/(all_brookies$BigCount+all_brookies$SmallCount)
-all_brookies$YOYRatio[is.na(all_brookies$YOYRatio)] <- 1
+all_brookies$YOYRatio[is.na(all_brookies$YOYRatio)] <- 1 #NAs are 100% YOY.
+
+brookie_events <- merge(all_brookies, events_meta)
 ```
 
-Bring in water data
-
+Now that the fish data are structured how we'll need them to be, it's time to pull flow data from the USGS. For this analysis we're going to focus on sites in the North Branch Susquehanna watershed. The DataRetrieval only pulls flow data by HUC8, so we'll create a list of the possible HUC8s within the HUC6 of the North Branch.
 ```{r}
-
-#bring together with event data
-brookie_events <- merge(all_brookies, events_meta)
-
-#flashiness index
-#install.packages("remotes")
-#remotes::install_github("leppott/ContDataQC")
-
-library(ContDataQC)
 library(dataRetrieval)
-library(sf)
-#all of the state at once:
-#gage_df <- readNWISdata(stateCd = "PA", parameterCd = "00060", startDate = "1974-10-01", endDate = "1974-10-02")
-#select one HUC8 at once, this is for Upper West Branch Susquehanna. HUC 6 throws errors
-#gage_df <- readNWISdata(huc = "02050201", parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
-
-#To do a full HUC6 at once, just pick your HUC6 and auto-populate the subwatersheds (only works up to 9 HUC8 in a HUC6)
-HUC6 <- "020502"#West Branch Susquehanna
-#auto-generate
-HUC_list <-paste(rep(HUC6,10), seq(0, 9, length.out = 10), sep="0")
-gage_df_WB <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
-
-#Or rbind multiple HUC6 together:
-HUC6 <- "020503"#Lower Susquehanna
-#auto-generate
-HUC_list <-paste(rep(HUC6,10), seq(0, 9, length.out = 10), sep="0")
-gage_df_Low <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
 
 HUC6 <- "020501"#North Branch Susquehanna
-#auto-generate
-HUC_list <-paste(rep(HUC6,10), seq(0, 9, length.out = 10), sep="0")
-gage_df_NB <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
+HUC_list <-paste(rep(HUC6,10), seq(0, 9, length.out = 10), sep="0")#To do a full HUC6 at once, just pick your HUC6 and auto-populate the subwatersheds (only works up to 9 HUC8 in a HUC6)
 
-#can add in as many HUCs as we want to cover the state
-gage_df <- do.call("rbind", list(gage_df_WB[,1:4], gage_df_NB[,1:4], gage_df_Low[,1:4]))
+gage_df <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010-01-01", endDate = "2020-12-31")
 
 ```
 
-
-Make spacial objects
+With flow data in hand we'll now calculate the R-B Index with RBIcalc from the ContDataQC package. USGS flow data time and date are in a YYYY- format that allows for creation of a year column with a quick strsplit so that we can calculate RBI by year and site number for all of our sites in the North Branch.
 
 ```{r}
+library(ContDataQC)
 
+gage_df$year <- sapply(strsplit(as.character(gage_df$dateTime), "-"),"[[",1)#Create year to get annual R-B index
 
-#Create year to get annual R-B index
-gage_df$year <- sapply(strsplit(as.character(gage_df$dateTime), "-"),"[[",1)
-
-#Aggregate by year and site w/in the HUC
-R_B_HUC <- aggregate(X_00060_00003~year+site_no, data = gage_df, FUN = RBIcalc)
-colnames(R_B_HUC)[3] <- "RBI"
-
-station_meta <- readNWISsite(unique(R_B_HUC$site_no))
-#merge RBI and station meta data
-stations <- merge(R_B_HUC, station_meta)
-
-#subset stations by drainage area to compare apples to apples
-medium_stations <- subset(stations, drain_area_va > 10 & drain_area_va < 100)
-
-#Create spatial objects
-medium_stations_so <- st_as_sf(medium_stations,coords = c("dec_lat_va", "dec_long_va"))
-#remove NAs to create spatial object
-events_so <- st_as_sf(brookie_events[!is.na(brookie_events$SiteLon),], coords = c("SiteLat","SiteLon"))
+R_B_HUC <- aggregate(X_00060_00003~year+site_no, data = gage_df, FUN = RBIcalc)#Aggregate by year and site w/in the HUC
+colnames(R_B_HUC)[3] <- "RBI" #rename column
 ```
 
-Basic modeling
+R-B Index follows a predictable pattern based on the watershed area upstream of discharge measurments: larger watersheds are generally less flashy than smaller watersheds. To avoid comparing our trout data to flashiness from the main stem of the North Branch, we need to subset our data by gage drainage area. We'll grab USGS site metadata based on the station numbers in our data, then subset to only keep watersheds between 10 and 100 square kilometers for comparison to brook trout counts.
+
+```{r}
+stations_meta <- readNWISsite(unique(R_B_HUC$site_no))
+
+medium_stations <- subset(stations_meta, drain_area_va > 10 & drain_area_va < 100)
+```
+
+To compare our gage data to brook trout data by site, we will create spatial objects from the data frames and perform a join by nearest feature, with a little help from the sf package. 
+
+```{r}
+library(sf)
+medium_stations_so <- st_as_sf(medium_stations,coords = c("dec_lat_va", "dec_long_va"))
+
+events_so <- st_as_sf(brookie_events[!is.na(brookie_events$SiteLon),], coords = c("SiteLat","SiteLon"))#remove NAs to create spatial object
+
+fish_flow_tmp <- st_join(events_so, medium_stations_so, join = st_nearest_feature)
+
+```
+
+Since we only collected gage data from the North Branch Susquehanna watershed but dbfishR data are from all of Pennsylvania, we'll remove sites that are not within a reasonable distance of a gage for comparison. We can calculate the distance between points with the nngeo package, then subset to keep gage-trout pairs that are within 0.5 degrees of each other (since we are working in decimal degrees rather than UTMs). Because the dbfishR data are primarily collected at unique locations every year, we also need to match RBI and trout by year.
 
 ```{r}
 
 #Spatial join
-fish_flow <- st_join(events_so, medium_stations_so, join = st_nearest_feature)
+library(nngeo)
+#distances are in degrees
+fish_flow_tmp$dist <- unlist(st_nn(events_so, medium_stations_so, returnDist = T)$dist)
+fish_flow_tmp <- subset(fish_flow_tmp, dist < 0.5)
 
-#Prelim fun
+#because of year and spatial join needed to change order of operations. Space first, then time
+fish_flow <- merge(fish_flow_tmp, R_B_HUC, by = c("year", "site_no"))
+```
+
+With spacetime issues solved, we can start to explore the data. For an initial quick look we'll use lm() model each potential response (total brook trout, adults, YOY, and YOY:total ratio) against RBI to see how the results compare.
+
+While each model has a significant relationship with RBI, the YOYRatio has a substantially higher adjusted R-squared than the others, so we'll focus on that response moving forward. 
+
+```{r}
 mod <- lm(TotalCount~RBI, data = fish_flow)
 summary(mod)
 
@@ -124,32 +123,43 @@ summary(mod3)
 
 mod4 <- lm(YOYRatio~RBI, data = fish_flow)
 summary(mod4) #winner winner chicken dinner
-
+plot(mod4$residuals)
 ```
 
-Real models
+Looking at the residuals from the linear model with YOY:total count and R-B Index, there's some heteroskedasticity in the relationship. So we'll work within a generalized additive modelling framework (mgcv package) and itsadug for some visualizations of the relationships.
+
+In addition to flashiness, water quality is a likely predictor of population dynamics for trout. Of the water quality measurements included with dbfishR, alkalinity and specific conductivity are least variable over short (diel) timescales so we can add those to our models to see if the combo of water quality and flashiness influence YOY:total count.
 
 ```{r}
-#Real models
 library(itsadug)
 
-gam.mod <- gam(YOYRatio~RBI, data = fish_flow, na.action = na.omit, method = "REML")
-summary(gam.mod)
-AIC(gam.mod) #211.2086
-plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE, main =gam.mod$formula)
+plot(mod4$residuals)#residuals from the YOYRatio lm() above
 
-#Bring in water quality (as a landscape proxy) - much better models
-gam.mod <- gam(YOYRatio~RBI+SpecCond, data = fish_flow, na.action = na.omit, method = "REML")
+gam.mod <- gam(YOYRatio~RBI, data = fish_flow, na.action = na.omit, method = "REML")#RBI only
 summary(gam.mod)
-AIC(gam.mod) #200.1027
-plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE, main =gam.mod$formula)
-plot_smooth(gam.mod, view="SpecCond", rm.ranef=FALSE, main =gam.mod$formula)
+AIC(gam.mod) #83.94
 
-gam.mod <- gam(YOYRatio~RBI+SpecCond+Alk, data = fish_flow, na.action = na.omit, method = "REML")
+plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE)
+
+gam.mod <- gam(YOYRatio~RBI+Alk, data = fish_flow, na.action = na.omit, method = "REML")#RBI + alkalinity
 summary(gam.mod)
-AIC(gam.mod) #194.8531
-plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE, main =gam.mod$formula)
-plot_smooth(gam.mod, view="SpecCond", rm.ranef=FALSE, main =gam.mod$formula)
-plot_smooth(gam.mod, view="Alk", rm.ranef=FALSE, main =gam.mod$formula)
+AIC(gam.mod) #82.92
+
+par(mfrow=c(1,2)) 
+plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE)
+plot_smooth(gam.mod, view="SpecCond", rm.ranef=FALSE, ylab = "", xlab = "Specific Conductivity")
+
+#not good anymore
+gam.mod <- gam(YOYRatio~RBI+Alk+SpecCond, data = fish_flow, na.action = na.omit, method = "REML")#RBI, alk, and specific conductivity
+summary(gam.mod)
+AIC(gam.mod) #81.44
+
+par(mfrow=c(1,3)) 
+plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE)
+plot_smooth(gam.mod, view="Alk", rm.ranef=FALSE, ylab = "", xlab = "Alkalinity")
+plot_smooth(gam.mod, view="SpecCond", rm.ranef=FALSE, ylab = "", xlab = "Specific Conductivity")
+
 ```
 
+
+Adding both conductivity and alkalinity to the model does improve the AIC and adjusted r-squared; however the vast majority of explanatory power still comes from the flashiness index.
