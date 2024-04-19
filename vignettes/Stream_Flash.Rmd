@@ -31,11 +31,11 @@ Now that we've got the water quality and site metadata we need to grab individua
 fish_rec <- get_fish_records()
 
 brookie_count <- aggregate(ID~EventCode, data = subset(fish_rec, Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
-colnames(brookie_count)[4] <- "TotalCount"
+colnames(brookie_count)[2] <- "TotalCount"
 small_brookie_count <- aggregate(ID~EventCode, data = subset(fish_rec, Length_mm < 100 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
-colnames(small_brookie_count)[4] <- "SmallCount"
+colnames(small_brookie_count)[2] <- "SmallCount"
 big_brookie_count <- aggregate(ID~EventCode, data = subset(fish_rec, Length_mm > 99 & Species == "Brook Trout" & Pass == "Pass 1"), FUN = length)
-colnames(big_brookie_count)[4] <- "BigCount"
+colnames(big_brookie_count)[2] <- "BigCount"
 ```
 
 Now that we have brook trout counts by sampling event and size classes,We'll merge these. In addition, we're going to add one more column to the data frame: a ratio of young-of-year fish to total fish counts from each sample. This can act as a metric of young-of-year success in a given year relative to the size of the adult population. Just merge this with the site-event data frame we created above and now all our brook trout counts and ratio are associated with site and sample metadata.
@@ -123,7 +123,6 @@ summary(mod3)
 
 mod4 <- lm(YOYRatio~RBI, data = fish_flow)
 summary(mod4) #winner winner chicken dinner
-plot(mod4$residuals)
 ```
 
 Looking at the residuals from the linear model with YOY:total count and R-B Index, there's some heteroskedasticity in the relationship. So we'll work within a generalized additive modelling framework (mgcv package) and itsadug for some visualizations of the relationships.
@@ -132,7 +131,6 @@ In addition to flashiness, water quality is a likely predictor of population dyn
 
 ```{r}
 library(itsadug)
-
 plot(mod4$residuals)#residuals from the YOYRatio lm() above
 
 gam.mod <- gam(YOYRatio~RBI, data = fish_flow, na.action = na.omit, method = "REML")#RBI only
@@ -147,7 +145,7 @@ AIC(gam.mod) #82.92
 
 par(mfrow=c(1,2)) 
 plot_smooth(gam.mod, view="RBI", rm.ranef=FALSE)
-plot_smooth(gam.mod, view="SpecCond", rm.ranef=FALSE, ylab = "", xlab = "Specific Conductivity")
+plot_smooth(gam.mod, view="Alk", rm.ranef=FALSE, ylab = "", xlab = "Specific Conductivity")
 
 #not good anymore
 gam.mod <- gam(YOYRatio~RBI+Alk+SpecCond, data = fish_flow, na.action = na.omit, method = "REML")#RBI, alk, and specific conductivity
