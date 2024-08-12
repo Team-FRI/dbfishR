@@ -3,7 +3,7 @@
 ![R](https://img.shields.io/badge/R-4.0.x-blue)
 ![CC0 license](https://img.shields.io/badge/License-CC0-green.svg)
 
-Programmatic access to the [Freshwater Research Institute’s](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute/) Fish and Amphibian database.
+Programmatic access to the [Freshwater Research Institute’s](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute/) database for fish and stream data collected by university partners of the Pennsylvania Unassessed Waters Initiative.
 
 
 inspired by
