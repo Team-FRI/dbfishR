@@ -35,7 +35,6 @@ View(get_sites())
 
 For examples please refer to the vignettes included in the package
 
-- [ ] FRI Data Entry SOP
-- [x] Visualizing Fish Sightings
-- [ ] Data Imputation suggestions
+- [x] FRI data entry SOP
+- [x] Visualizing fish and external data
 - [ ] Code explanation for papers that used this data
