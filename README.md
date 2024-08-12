@@ -14,10 +14,6 @@ inspired by
 
 # Installation
 
-* Current version (from CRAN)
-
-None yet.
-
 * Latest development version from GitHub
 
 ```{r}
