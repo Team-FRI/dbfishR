@@ -22,11 +22,6 @@ output: html_document
 editor_options: 
   chunk_output_type: console
 ---
-https://github.com/Team-FRI/dbfishR
-devtools::install_github(repo = 'Team-FRI/dbfishR', force = TRUE)
-
-devtools::install_github(repo = 'leppott/ContDataQC', force = TRUE)
-
 
 We know many species have different niches and are more or less susceptible to specific environmental stressors depending on their life stage. One example is that adult fish are typically more vagile and able to move into refugia during high flow events than young-of-year might be. Adults might also be expected to be better able to hold position in strong current and resist displacement (i.e. being forced downstream) during spates. To look a specific instance of this pattern, we are going to compare brook trout population data from dbfishR to USGS flow data via the R-B Index of flashiness.
 
@@ -84,6 +79,7 @@ gage_df <- readNWISdata(huc = HUC_list, parameterCd = "00060", startDate = "2010
 With flow data in hand we'll now calculate the R-B Index with RBIcalc from the ContDataQC package. USGS flow data time and date are in a YYYY- format that allows for creation of a year column with a quick strsplit so that we can calculate RBI by year and site number for all of our sites in the North Branch.
 
 ```{r}
+#devtools::install_github(repo = 'leppott/ContDataQC', force = TRUE)
 library(ContDataQC)
 
 gage_df$year <- sapply(strsplit(as.character(gage_df$dateTime), "-"),"[[",1)#Create year to get annual R-B index
