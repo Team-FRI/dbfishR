@@ -3,7 +3,7 @@ Type: Package
 Version: 0.0.2
 Date: 2024-01-31
 Title: dbfishR
-Description: Programmatic access to the [Freshwater Research Institute](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute)’s Fish and Amphibian database.
+Description: An R package for fish and water quality data access and entry.
 Authors@R: c(
     person(
         given = "Matt ",
@@ -40,7 +40,11 @@ Suggests:
     ggplot2,
     FedData,
     tigris,
-    dplyr
+    dplyr,
+    dataRetrieval,
+    sf,
+    nngeo,
+    itsadug
 License: MIT + file LICENSE
 URL: https://github.com/Team-FRI/dbfishR
 BugReports: https://github.com/Team-FRI/dbfishR/issues
