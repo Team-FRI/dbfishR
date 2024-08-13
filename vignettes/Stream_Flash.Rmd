@@ -1,7 +1,23 @@
 ---
-output: html_document
+title: 'Stream Flashiness'
+author:
+  - Matt Wilson
+date: "`r Sys.Date()`"
 editor_options: 
   chunk_output_type: console
+output:
+  rmarkdown::html_vignette
+bibliography: bib.bib
+vignette: >
+  %\VignetteIndexEntry{Stream Flashiness}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r echo = F}
+knitr::opts_chunk$set(warning = F, message = F, fig.width = 8, fig.height = 8)
+```
+
 ---
 https://github.com/Team-FRI/dbfishR
 devtools::install_github(repo = 'Team-FRI/dbfishR', force = TRUE)
