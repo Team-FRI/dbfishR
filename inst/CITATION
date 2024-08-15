@@ -1,6 +1,6 @@
 rref <- bibentry(
    bibtype = "Manual",
-   title = "dbfishR: An R package for fish and water quality data access and entry",
+   title = "dbfishR: An R package and database for fish and water quality data access and entry",
    author = c(
     person(
         given = "Matt",
@@ -10,10 +10,6 @@ rref <- bibentry(
         given = "Dan",
         family = "Ressler",
         role = c("aut", "cph")),
-    person(
-        given = "Kevin",
-        family = "Purcell",
-        role = c("aut")),
     person(
         given = "Sara",
         family = "Ashcraft",

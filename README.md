@@ -3,8 +3,7 @@
 ![R](https://img.shields.io/badge/R-4.0.x-blue)
 ![CC0 license](https://img.shields.io/badge/License-CC0-green.svg)
 
-Programmatic access to the [Freshwater Research Institute’s](https://www.susqu.edu/academics/centers-and-programs/freshwater-research-institute/) database for fish and stream data collected by university partners of the Pennsylvania Unassessed Waters Initiative.
-
+dbfishR: Programmatic access to fish and stream data from university partners of the PA Unassessed Waters Initiative.
 
 inspired by
 
@@ -37,4 +36,3 @@ For examples please refer to the vignettes included in the package
 
 - [x] FRI data entry SOP
 - [x] Visualizing fish and external data
-- [ ] Code explanation for papers that used this data

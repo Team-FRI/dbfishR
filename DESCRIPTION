@@ -3,7 +3,7 @@ Type: Package
 Version: 0.0.2
 Date: 2024-01-31
 Title: dbfishR
-Description: An R package for fish and water quality data access and entry.
+Description: An R package and database for fish and water quality data access and entry.
 Authors@R: c(
     person(
         given = "Matt ",
@@ -13,10 +13,6 @@ Authors@R: c(
         given = "Dan",
         family = "Ressler",
         role = c("aut", "cph")),
-    person(
-        given = "Kevin",
-        family = "Purcell",
-        role = c("aut")),
     person(
         given = "Sara",
         family = "Ashcraft",
