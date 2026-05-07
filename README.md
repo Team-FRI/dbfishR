@@ -2,6 +2,7 @@
 
 ![R](https://img.shields.io/badge/R-4.0.x-blue)
 ![CC0 license](https://img.shields.io/badge/License-CC0-green.svg)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20074383.svg)](https://doi.org/10.5281/zenodo.20074383)
 
 dbfishR: Programmatic access to fish and stream data from university partners of the PA Unassessed Waters Initiative.
 
