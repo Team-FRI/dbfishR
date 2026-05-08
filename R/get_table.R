@@ -191,7 +191,7 @@ get_fish_tally <-
 #'
 get_particle_size <-
   function(...) {
-    get_table(table = 'ParticleSize', ...) }
+    get_table(table = 'GravelBoard', ...) }
 
 #' @name get_sites
 #'
